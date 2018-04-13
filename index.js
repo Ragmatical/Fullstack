@@ -4,10 +4,16 @@ var bodyParser = require('body-parser');
 /* The http module is used to listen for requests from a web browser */
 var http = require('http');
 
+var usermodel = require('./user.js').getModel();
+
+var crypto = require('crypto');
+
 var mongoose = require('mongoose')
 
 /* The path module is used to transform relative paths to absolute paths */
 var path = require('path');
+
+
 
 /* Creates an express application */
 var app = express();
@@ -33,16 +39,47 @@ function startServer() {
 		res.sendFile(filePath);
 	});
 
+	app.get('/', (req,res,next) => {
+		var filePath = path.join(__dirname, './home.html')
+		res.sendFile(filePath)
+	});
+
+	app.get('/hw1', (req,res,next) => {
+		var filePath = path.join(__dirname, './Hw1.html')
+		res.sendFile(filePath)
+	});
+
 	app.post('/', (req, res, next) => {
 	  var filePath = path.join(__dirname, './home.html')
 		res.sendFile(filePath);
 	});
 
 	app.post('/surveymonkey', (req, res, next) => {
-		console.log(req.body);
-		res.send('OK')
+		var newuser = new usermodel(req.body);
+		var password = req.body.password;
+		var salt = crypto.randomBytes(128).toString('base64');
+		newuser.salt = salt;
+		// Winding up the crypto hashing lock 10000 times
+		var iterations = 10000;
+		crypto.pbkdf2(password, salt, iterations, 256, 'sha256', function(err, hash) {
+			if(err) {
+				return res.send({error: err});
+			}
+			newuser.password = hash.toString('base64');
+			// Saving the user object to the database
+			newuser.save(function(err) {
 
-	})
+			// Handling the duplicate key errors from database
+			if(err && err.message.includes('duplicate key error') && err.message.includes('userName')) {
+				return res.send({error: 'Username, ' + req.body.userName + 'already taken'});
+			}
+			if(err) {
+				return res.send({error: err.message});
+			}
+				res.send({error: null});
+			});
+		});
+	});
 
 	/* Defines what function to all when the server recieves any request from http://localhost:8080 */
 	server.on('listening', () => {

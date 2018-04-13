@@ -29,8 +29,12 @@
 			<input type='text' name='phone'>
 		</div>
 		<div>
-			<label>What is your password? :)</label>
-			<input type='text' name='hobby'>
+			<label>What is your password? </label>
+			<input type='password' name='password'>
+		</div>
+		<div>
+			<label>Verify Password </label>
+			<input type='password' name='verify'>
 		</div>
 		<div>
 			<button>Submit</button>
@@ -44,7 +48,14 @@
 				var $input = $inputs[i];
 				data[$input.name]  = $input.value;
 			}
+			verifyPassword();
 			sendData(data);
+		}
+		function verifyPassword() {
+			var $passwords = document.querySelectorAll('input[type="password"]');
+			var $samePasswords = $passwords[0].value === $passwords[1].value
+			if(!$samePasswords) return alert('Passwords not matching')
+			return true
 		}
 
 		function sendData(data) {
@@ -56,6 +67,16 @@
 
 			// Explain to the server that we are sending the data in json format
 				req.setRequestHeader('content-type', 'application/json')
+				// Alert the user to any errors from the server
+				function readyStateChange() {
+					if(req.readyState !== 4) return;
+					if(req.status !== 200) return;
+					data = JSON.parse(req.responseText);
+					if(data.error) {
+						alert(data.error);
+					}
+				}				
+req.onreadystatechange = readyStateChange;
 
 			// Sending the data in JSON format
 				req.send(JSON.stringify(data));
