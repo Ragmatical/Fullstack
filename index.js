@@ -39,6 +39,11 @@ function startServer() {
 		res.sendFile(filePath);
 	});
 
+	app.get('/login', (req, res, next) => {
+		var filePath = path.join(__dirname, './login.html')
+		res.sendFile(filePath);
+	});
+
 	app.get('/', (req,res,next) => {
 		var filePath = path.join(__dirname, './home.html')
 		res.sendFile(filePath)
@@ -52,6 +57,33 @@ function startServer() {
 	app.post('/', (req, res, next) => {
 	  var filePath = path.join(__dirname, './home.html')
 		res.sendFile(filePath);
+	});
+
+	app.post('/login', (req, res, next) => {
+		var newuser = new usermodel(req.body);
+		var password = req.body.password;
+		var salt = crypto.randomBytes(128).toString('base64');
+		newuser.salt = salt;
+		// Winding up the crypto hashing lock 10000 times
+		var iterations = 10000;
+		crypto.pbkdf2(password, salt, iterations, 256, 'sha256', function(err, hash) {
+			if(err) {
+				return res.send({error: err});
+			}
+			newuser.password = hash.toString('base64');
+			// Saving the user object to the database
+			newuser.save(function(err) {
+
+			// Handling the duplicate key errors from database
+			if(err && err.message.includes('duplicate key error') && err.message.includes('userName')) {
+				return res.send({error: 'Username, ' + req.body.userName + 'already taken'});
+			}
+			if(err) {
+				return res.send({error: err.message});
+			}
+				res.send({error: null});
+			});
+		});
 	});
 
 	app.post('/surveymonkey', (req, res, next) => {
