@@ -16,7 +16,7 @@
   </div>
   <div>
     <form>
-      <input id='Button' type="button" value="Login" onclick="window.location.href='http://www.carrotmuseum.co.uk'" />
+      <input id='Button' type="button" value="Login" />
     </form>
   </div>
   <script>
@@ -30,12 +30,6 @@
     }
     verifyPassword();
     sendData(data);
-  }
-  function verifyPassword() {
-    var $passwords = document.querySelectorAll('input[type="password"]');
-    var $samePasswords = $passwords[0].value === $passwords[1].value
-    if(!$samePasswords) return alert('Passwords not matching')
-    return true
   }
 
   function sendData(data) {
@@ -61,7 +55,7 @@
     // Sending the data in JSON format
       req.send(JSON.stringify(data));
     }
-
+  var $button = document.querySelector('button')
   $button.addEventListener('click', storeData);
   </script>
 </body>
