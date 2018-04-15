@@ -6,18 +6,69 @@
   </title>
 </head>
 <body>
+  <style>
+    .background {
+      background-image : url("http://ak7.picdn.net/shutterstock/videos/16128067/thumb/1.jpg")
+    }
+
+  </style>
   <div>
     <label>Username: </label>
     <input type = "text" name="username">
   </div>
   <div>
     <label>Password: </label>
-    <input type = "password" name="pass">
+    <input type = "password" name="password">
   </div>
   <div>
     <form>
-      <input id='Button' type="button" value="Login" onclick="window.location.href='http://ragmatical.herokuapp.com/game'" />
+      <input id='Button' type="button" value="Login" onclick="window.location.href='http://www.carrotmuseum.co.uk'" />
     </form>
   </div>
+  <script>
+  var $inputs = document.querySelectorAll('input')
+  var $button = document.querySelector('button')
+  function storeData() {
+    var data = {};
+    for(var i=0; i < $inputs.length; i++){
+      var $input = $inputs[i];
+      data[$input.name]  = $input.value;
+    }
+    verifyPassword();
+    sendData(data);
+  }
+  function verifyPassword() {
+    var $passwords = document.querySelectorAll('input[type="password"]');
+    var $samePasswords = $passwords[0].value === $passwords[1].value
+    if(!$samePasswords) return alert('Passwords not matching')
+    return true
+  }
+
+  function sendData(data) {
+    // Creating a new request to the server that contains the data
+    var req = new XMLHttpRequest();
+
+    // Opening up a connection with the server to 'POST' data
+      req.open('POST', '/login', true);
+
+    // Explain to the server that we are sending the data in json format
+      req.setRequestHeader('content-type', 'application/json')
+      // Alert the user to any errors from the server
+      function readyStateChange() {
+        if(req.readyState !== 4) return;
+        if(req.status !== 200) return;
+        data = JSON.parse(req.responseText);
+        if(data.error) {
+          alert(data.error);
+        }
+      }
+  req.onreadystatechange = readyStateChange;
+
+    // Sending the data in JSON format
+      req.send(JSON.stringify(data));
+    }
+
+  $button.addEventListener('click', storeData);
+  </script>
 </body>
 </html>
