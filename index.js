@@ -2,34 +2,19 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var Io = require('socket.io')
-<<<<<<< HEAD
+
 var http = require('http');
 var usermodel = require('./user.js').getModel();
 var crypto = require('crypto');
 var mongoose = require('mongoose')
-=======
-/* The http module is used to listen for requests from a web browser */
-var http = require('http');
 
-var usermodel = require('./user.js').getModel();
-
-var crypto = require('crypto');
-
-var mongoose = require('mongoose')
-
-/* The path module is used to transform relative paths to absolute paths */
->>>>>>> f0e738b7a6e6a74cfbed82144f67be6b0c09329c
 var path = require('path');
 var app = express();
 var server = http.createServer(app);
-<<<<<<< HEAD
+
 var io = Io(server)
 var iterations = 10000;
-=======
 
-var io = Io(server)
-
->>>>>>> f0e738b7a6e6a74cfbed82144f67be6b0c09329c
 /* Defines what port to use to listen to web requests */
 var port =  process.env.PORT ? parseInt(process.env.PORT) : 8080;
 
@@ -46,7 +31,6 @@ function addSockets() {
 
 function startServer() {
 
-<<<<<<< HEAD
 	function authenticateUser(username, password, callback) {
 
 		if(!username) return callback('No username given');
@@ -62,8 +46,6 @@ function startServer() {
 		});
 	}
 
-=======
->>>>>>> f0e738b7a6e6a74cfbed82144f67be6b0c09329c
 	addSockets();
 
 	app.use(bodyParser.json({ limit: '16mb' }));
@@ -107,13 +89,9 @@ function startServer() {
 	app.post('/login', (req, res, next) => {
 		var username = req.body.username;
 		var password = req.body.password;
-<<<<<<< HEAD
 		authenticateUser(username, password, (err) => {
 			res.send({error:err});
 		});
-=======
-		res.send('OK');
->>>>>>> f0e738b7a6e6a74cfbed82144f67be6b0c09329c
 	});
 
 	app.post('/surveymonkey', (req, res, next) => {
@@ -122,10 +100,6 @@ function startServer() {
 		var salt = crypto.randomBytes(128).toString('base64');
 		newuser.salt = salt;
 		// Winding up the crypto hashing lock 10000 times
-<<<<<<< HEAD
-=======
-		var iterations = 10000;
->>>>>>> f0e738b7a6e6a74cfbed82144f67be6b0c09329c
 		crypto.pbkdf2(password, salt, iterations, 256, 'sha256', function(err, hash) {
 			if(err) {
 				return res.send({error: err});
