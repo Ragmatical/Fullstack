@@ -68,6 +68,20 @@
 			var $canvas = document.querySelector('canvas');
 			$canvas.width = window.screen.width;
 			$canvas.height = window.screen.height;
+			var $button = document.querySelector('button');
+			var $input = document.querySelector('input');
+			$button.addEventListener('click', function() {
+				if($input.value) {
+					socket.emit('message', $input.value);
+					$input.value = '';
+				}
+			});
+			socket.on('new message', function(message) {
+				var $ul = document.querySelector('#chat ul');
+				var $li = document.createElement('li');
+				$li.innerText = message;
+				$ul.appendChild($li)
+			});
 		</script>
 	</body>
 </html>
