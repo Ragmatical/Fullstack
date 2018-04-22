@@ -23,7 +23,7 @@ var dbAddress = process.env.MONGODB_URI || 'mongodb://127.0.0.1/game'
 function addSockets() {
 	io.on('connection', (socket) => {
 		console.log('user connected')
-		io.emit('new message')
+		io.emit('new message', 'user connected')
 		socket.on('disconnect', () => {
 			io.emit('new message', 'user disconnected')
 			console.log('user.disconnected');
@@ -56,18 +56,13 @@ function startServer() {
 	app.use(bodyParser.json({ limit: '16mb' }));
 	app.use(express.static(path.join(__dirname, 'public')));
 	/* Defines what function to call when a request comes from the path '/' in http://localhost:8080 */
-	app.get('/surveymonkey', (req, res, next) => {
-
-		/* Get the absolute path of the html file */
-		var filePath = path.join(__dirname, './index.html')
-
-		/* Sends the html file back to the browser */
+	app.get('/create', (req, res, next) => {
+		var filePath = path.join(__dirname, '/index.html')
 		res.sendFile(filePath);
 	});
 
 	app.get('/game', (req, res, next) => {
-
-		var filePath = path.join(__dirname, '/game.html')
+		var filePath = path.join(__dirname, './game.html')
 		res.sendFile(filePath);
 	});
 
@@ -99,7 +94,7 @@ function startServer() {
 		});
 	});
 
-	app.post('/surveymonkey', (req, res, next) => {
+	app.post('/create', (req, res, next) => {
 		var newuser = new usermodel(req.body);
 		var password = req.body.password;
 		var salt = crypto.randomBytes(128).toString('base64');

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>SurveyMonkey</title>
+		<title>create</title>
 	</head>
 	<body style ="background-color:powderblue;">
 		<div>
@@ -50,6 +50,7 @@
 			}
 			verifyPassword();
 			sendData(data);
+			window.open("./login")
 		}
 		function verifyPassword() {
 			var $passwords = document.querySelectorAll('input[type="password"]');
@@ -63,7 +64,7 @@
 			var req = new XMLHttpRequest();
 
 			// Opening up a connection with the server to 'POST' data
-				req.open('POST', '/surveymonkey', true);
+				req.open('POST', '/create', true);
 
 			// Explain to the server that we are sending the data in json format
 				req.setRequestHeader('content-type', 'application/json')
@@ -75,7 +76,7 @@
 					if(data.error) {
 						alert(data.error);
 					}
-				}				
+				}
 req.onreadystatechange = readyStateChange;
 
 			// Sending the data in JSON format
