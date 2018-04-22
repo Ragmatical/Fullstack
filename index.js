@@ -23,7 +23,7 @@ var dbAddress = process.env.MONGODB_URI || 'mongodb://127.0.0.1/game'
 function addSockets() {
 	io.on('connection', (socket) => {
 		console.log('user connected')
-		io.emit('new message')
+		io.emit('new message', 'user connected')
 		socket.on('disconnect', () => {
 			io.emit('new message', 'user disconnected')
 			console.log('user.disconnected');
