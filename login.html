@@ -29,6 +29,9 @@
     sendData(data);
   }
 
+  var error = window.location.search.replace('?error=','')
+  if(error) alert(decodeURIComponent());
+
   function sendData(data) {
     // Creating a new request to the server that contains the data
     var req = new XMLHttpRequest();
